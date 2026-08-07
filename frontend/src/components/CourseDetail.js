@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { FaArrowLeft, FaBook, FaClock, FaPlay, FaUser, FaUsers } from 'react-icons/fa';
 import { getCourse, unenrollFromCourse } from '../api/courses';
 import { API_BASE } from '../config/api';
-import { getAccessToken, getStoredUser, saveAuthSession } from '../utils/auth';
+import { getAccessToken, getStoredUser, saveAuthSession, authFetch } from '../utils/auth';
 import { isAdmin, isInstructor, isStudent } from '../utils/rbac';
 import EnrollButton from './EnrollButton';
 
@@ -32,13 +32,11 @@ const CourseDetail = () => {
     try {
       const token = getAccessToken();
       if (token) {
-        const meRes = await fetch(`${API_BASE}/api/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const meRes = await authFetch(`${API_BASE}/api/auth/me`);
         const meData = await meRes.json();
         if (meRes.ok) {
           setUser(meData.data);
-          saveAuthSession({ accessToken: token, user: meData.data });
+          saveAuthSession({ accessToken: getAccessToken(), user: meData.data });
         }
       }
 
@@ -60,8 +58,9 @@ const CourseDetail = () => {
 
   useEffect(() => {
     if (searchParams.get('enroll') === '1' && user && isStudent(user) && !enrolled && !loading) {
-      toast.info('Click Enroll for free to join this course');
+      toast.info(course?.price > 0 ? 'Click Enroll to join this course' : 'Click Enroll for free to join this course');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, user, enrolled, loading]);
 
   const handleUnenroll = async () => {
@@ -143,6 +142,13 @@ const CourseDetail = () => {
                   <FaUsers /> {course.enrolledCount || 0} students
                 </span>
               </div>
+              <div className="mt-3">
+                {course.price > 0 ? (
+                  <span className="fs-4 fw-bold">₹{course.price}</span>
+                ) : (
+                  <span className="fs-4 fw-bold text-warning">Free</span>
+                )}
+              </div>
             </div>
             <div className="col-lg-4 text-lg-end">
               {course.thumbnail && (
@@ -170,6 +176,8 @@ const CourseDetail = () => {
               <>
                 <EnrollButton
                   courseSlug={course.slug}
+                  coursePrice={course.price || 0}
+                  courseName={course.title}
                   isEnrolled={enrolled}
                   size="lg"
                   onEnrolled={load}

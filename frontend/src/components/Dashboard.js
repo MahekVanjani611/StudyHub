@@ -6,6 +6,7 @@ import {
   clearAuthSession,
   getAccessToken,
   getStoredUser,
+  authFetch,
 } from '../utils/auth';
 import { dashboardPathForRole, isAdmin, isInstructor } from '../utils/rbac';
 import { getMyEnrolledCourses } from '../api/courses';
@@ -29,10 +30,8 @@ const Dashboard = () => {
 
     const load = async () => {
       try {
-        const [meRes, enrolledRes] = await Promise.all([
-          fetch(`${API_BASE}/api/auth/me`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
+        const [meRes] = await Promise.all([
+          authFetch(`${API_BASE}/api/auth/me`),
           getMyEnrolledCourses(),
         ]);
         const meData = await meRes.json();
