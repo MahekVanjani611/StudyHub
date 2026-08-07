@@ -166,6 +166,78 @@ body {
   border-color: var(--accent);
 }
 
+/* ===== Navbar ===== */
+/* .bg-gray had no light-mode definition before, so the navbar had almost
+   no contrast against the page background. Give it a real background,
+   border, and consistent spacing/hover/active states in both themes. */
+.navbar.bg-gray {
+  background-color: var(--bg-navbar) !important;
+  border-bottom: 1px solid var(--border-color);
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
+.navbar .navbar-nav {
+  gap: 0.25rem;
+}
+
+.navbar .nav-link {
+  color: var(--text-secondary) !important;
+  font-weight: 500;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus-visible {
+  color: var(--accent) !important;
+  background-color: var(--accent-light);
+}
+
+/* Active page highlighting (used with NavLink's auto "active" class) */
+.navbar .nav-link.active {
+  color: var(--accent) !important;
+  background-color: var(--accent-light);
+  font-weight: 700;
+}
+
+.navbar .dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+}
+
+.navbar .dropdown-toggle.active {
+  color: var(--accent) !important;
+  background-color: var(--accent-light);
+}
+
+.navbar .dropdown-menu {
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 24px var(--shadow-color);
+  margin-top: 0.4rem;
+}
+
+.navbar .dropdown-item {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin: 0 0.25rem;
+  width: calc(100% - 0.5rem);
+}
+
+.navbar .dropdown-item:hover {
+  background-color: var(--accent-light);
+  color: var(--accent);
+}
+
+.navbar-brand img {
+  transition: transform 0.2s ease;
+}
+
+.navbar-brand:hover img {
+  transform: scale(1.04);
+}
+
 /* Core layout */
 .home-container {
   display: flex;
